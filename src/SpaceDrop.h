@@ -5,10 +5,12 @@
 
 extern Adafruit_SSD1306 display;
 
+//Klasa zarządzająca grą SpaceDrop
 class SpaceDrop {
    private:
     int p_x, score, high_score, lifes;
     int potentiometer, buzzer, button;
+    int screen_width, screen_height;
     const int p_y = 52;
 
     unsigned long fire_time = 0;
@@ -35,13 +37,16 @@ class SpaceDrop {
     Explosion explosions[6];
 
    public:
-    void init(int pot, int btn1, int buz) {
+    void init(int pot, int btn1, int buz, int width, int height) {
         score = 0;
         fire_time = 0;
         lifes = 3;
         buzzer = buz;
         potentiometer = pot;
         button = btn1;
+
+        screen_width = width;
+        screen_height = height;
 
         for (int i = 0; i < 5; i++) {
             bullets[i].active = false;
@@ -51,7 +56,8 @@ class SpaceDrop {
             explosions[i].active = false;
         }
     }
-
+    
+    //Funkcja tworząca przeciwników
     void spawn_enemy() {
         for (int i = 0; i < 6; i++) {
             if (!enemies[i].active) {
@@ -63,6 +69,7 @@ class SpaceDrop {
         }
     }
 
+    //Funkcja logiki gry
     void update() {
         if (is_game_over()) { return; }
 
@@ -97,7 +104,7 @@ class SpaceDrop {
         for (int i = 0; i < 6; i++) {
             if (enemies[i].active) {
                 enemies[i].y += 0.5;
-                if (enemies[i].y > 64) { enemies[i].active = false; }
+                if (enemies[i].y > screen_height) { enemies[i].active = false; }
             }
         }
 
@@ -112,6 +119,7 @@ class SpaceDrop {
         subtract_life();
     }
 
+    //Funkcja wykrywająca kolizję pocisku z przeciwnikiem
     void detect_collision() {
         for (int i = 0; i < 5; i++) {
             if (bullets[i].active) {
@@ -137,6 +145,7 @@ class SpaceDrop {
         }
     }
 
+    //Funkcja odejmująca życie gracza
     void subtract_life() {
         for (int i = 0; i < 6; i++) {
             if (enemies[i].active && enemies[i].y > p_y + 1) {
@@ -148,6 +157,7 @@ class SpaceDrop {
         }
     }
 
+    //Funkcja animacji wybuchu przeciwnika
     void explosion(float x, float y) {
         for (int i = 0; i < 7; i++) {
             display.drawPixel(x + i, y, WHITE);
@@ -165,9 +175,10 @@ class SpaceDrop {
         return (lifes <= 0);
     }
 
+    //Funkcja renderująca grafikę gry na ekranie OLED
     void draw() {
         display.clearDisplay();
-        display.drawFastHLine(0, p_y + 1, 128, WHITE);
+        display.drawFastHLine(0, p_y + 1, screen_width, WHITE);
         display.drawTriangle(p_x, p_y - 5, p_x - 5, p_y, p_x + 5, p_y, WHITE);
         display.setTextSize(1);
         display.setTextColor(WHITE);
