@@ -5,13 +5,14 @@
 
 extern Adafruit_SSD1306 display;
 
-//Klasa obsługująca logikę gre
+//Klasa zarządzająca grą PONG
 class Pong {
   private:
     float b_x, b_vx, b_y, b_vy;
-    int p1_y, p2_y;
+    float p1_y, p2_y;
     int p1_score, p2_score;
     int buzzer, potentiometer;
+    int screen_width, screen_height;
     const float speed = 2.915;
 
     //Funkcja przywracająca piłkę na pozycję startową
@@ -24,15 +25,18 @@ class Pong {
     }
 
   public:
-    void init(int pot, int buz) {
+    void init(int pot, int buz, int width, int height) {
         p1_score = 0;
         p2_score = 0;
         buzzer = buz;
         potentiometer = pot;
+        
+        screen_width = width;
+        screen_height = height;
         reset_ball(1);
     }
 
-    //Główna logika gry
+    //Funkcja logiki gry
     void update() {
         p1_y = map(analogRead(potentiometer), 0, 4095, 1, 47);
 
@@ -93,17 +97,17 @@ class Pong {
 
     bool is_game_over() { return (p1_score >= 11 || p2_score >= 11); }
 
-    //Funkcja renderująca grafikę ekranu OLED
+    //Funkcja renderująca grafikę gry na ekranie OLED
     void draw() {
         display.clearDisplay();
-        display.drawFastHLine(0, 0, 128, WHITE);
-        display.drawFastHLine(0, 63, 128, WHITE);
-        display.fillRect(4, p1_y, 3, 16, WHITE);
-        display.fillRect(121, p2_y, 3, 16, WHITE);
-        display.fillCircle(b_x, b_y, 2, WHITE);
+        display.drawFastHLine(0, 0, screen_width, WHITE);
+        display.drawFastHLine(0, screen_height - 1, screen_width, WHITE);
+        display.fillRect(4, (int)p1_y, 3, 16, WHITE);
+        display.fillRect(121, (int)p2_y, 3, 16, WHITE);
+        display.fillCircle((int)b_x, (int)b_y, 2, WHITE);
 
-        for (int i = 0; i < 64; i += 3) {
-            display.drawPixel(63, i, WHITE);
+        for (int i = 0; i < screen_height; i += 3) {
+            display.drawPixel((screen_width / 2) - 1, i, WHITE);
         }
 
         display.setTextColor(WHITE);
@@ -115,11 +119,7 @@ class Pong {
 
         if (is_game_over()) {
             display.setCursor(25, 31);
-            if (p1_score == 11) {
-                display.print("PLAYER 1 WON!");
-            } else if (p2_score == 11) {
-                display.print("PLAYER 2 WON!");
-            }
+            display.print(p1_score == 11 ? "PLAYER 1 WON!" : "PLAYER 2 WON!");
         }
 
         display.display();
