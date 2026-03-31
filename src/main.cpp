@@ -6,12 +6,15 @@
 
 #include "Menu.h"
 
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
 #define PIN_POT 34
 #define PIN_BTN1 23
 #define PIN_BTN2 25
 #define PIN_BUZZ 27
 
-Adafruit_SSD1306 display(128, 64, &Wire, -1);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 Menu menu;
 
@@ -24,7 +27,7 @@ void setup() {
   pinMode(PIN_BTN2, INPUT_PULLUP);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  menu.init(PIN_BTN1, PIN_BTN2, PIN_POT, PIN_BUZZ);
+  menu.init(PIN_BTN1, PIN_BTN2, PIN_POT, PIN_BUZZ, SCREEN_WIDTH, SCREEN_HEIGHT);
 
   randomSeed(esp_random());
 }
@@ -32,4 +35,3 @@ void setup() {
 void loop() {
   menu.update();
 }
-
