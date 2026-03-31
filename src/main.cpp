@@ -9,10 +9,10 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
-#define PIN_POT 34
-#define PIN_BTN1 23
-#define PIN_BTN2 25
-#define PIN_BUZZ 27
+#define PIN_POT 2
+#define PIN_BTN1 3
+#define PIN_BTN2 4
+#define PIN_BUZZ 5
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
