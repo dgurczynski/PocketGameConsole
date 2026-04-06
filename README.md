@@ -4,7 +4,7 @@ Przenośna mini-konsola oparta na układzie **ESP32-C3** z wyświetlaczem OLED 0
 
 ## O projekcie
 To mój **pierwszy w życiu projekt PCB**, wykonany w całości w programie KiCad. Skupiłem się w nim na:
-* Sprzętowym debouncingu przycisków (filtr R-C).
+* Sprzętowym debouncingu przycisków (filtr RC).
 * Czytelnym opisie warstw (Silkscreen) i estetyce logotypu.
 * Bezpiecznym zasilaniu bateryjnym (dioda Schottky'ego).
 
